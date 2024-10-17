@@ -16,7 +16,7 @@ jobs:
 
       - name: Install Tex package
         run: |
-          sudo apt-get update && apt-get install -y texlive-full
+          sudo apt-get update && sudo apt-get install -y texlive-full
 
       - name: Compile to latex
         run: |
