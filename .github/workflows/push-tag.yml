@@ -32,7 +32,7 @@ jobs:
       - name: Generate Tag Name
         id: generate_tag
         run: |
-          TAG="commit-${{ steps.get_commit_count.outputs.commit_count }}"
+          TAG="v-${{ steps.get_commit_count.outputs.commit_count }}"
           echo "tag_name=$TAG" >> $GITHUB_OUTPUT
 
       - name: Check if Tag Exists
