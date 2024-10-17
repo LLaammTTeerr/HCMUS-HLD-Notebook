@@ -19,7 +19,7 @@ jobs:
 
       - name: Create Tag
         run: |
-          TAG_NAME="commit-${{ steps.commit_count.outputs.count }}"
+          TAG_NAME="v${{ steps.commit_count.outputs.count }}.0.0"
           git tag "$TAG_NAME"
           git push origin "$TAG_NAME"
         env:
