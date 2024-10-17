@@ -38,7 +38,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: Notebook
-          release_name: Release ${{ github.ref }}
+          release_name: Release ${{ github.sha }}
           body: "Automated release of the compiled PDF."
           draft: false
           prerelease: false
