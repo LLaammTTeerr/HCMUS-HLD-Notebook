@@ -7,6 +7,6 @@ for (dirpath, dirnames, filenames) in os.walk('.'):
         if x.split('.')[-1] in ["cpp", "java"]:
             tex_file.append("\\code{%s}{%s}\n" % (x.split('.')[0], os.path.join(dirpath, x).replace('\\', '/')))
 tex_file.extend(open("footer.tex").readlines())
-open("build.tex", "w").write("".join(tex_file))
-call(["lualatex", "build.tex"])
-call(["lualatex", "build.tex"])
+open("main.tex", "w").write("".join(tex_file))
+call(["lualatex", "main.tex"])
+call(["lualatex", "main.tex"])
