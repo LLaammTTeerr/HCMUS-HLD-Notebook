@@ -1,26 +1,47 @@
-name: Tag with Commit Count
+# .github/workflows/auto-tag-commit-count.yml
+
+name: Auto Tag by Commit Count
 
 on:
   push:
     branches:
-      - main
+      - main  # Change to your default branch if different
 
 jobs:
-  tag:
+  create_commit_tag:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Get Commit Count
-        id: commit_count
-        run: echo "count=$(git rev-list --count HEAD)" >> $GITHUB_OUTPUT
-
-      - name: Create Tag
+      - name: Set Up Git
         run: |
-          TAG_NAME="v${{ steps.commit_count.outputs.count }}.0.0"
-          git tag "$TAG_NAME"
-          git push origin "$TAG_NAME"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Get Commit Count
+        id: get_commit_count
+        run: |
+          COMMIT_COUNT=$(git rev-list --count HEAD)
+          echo "commit_count=$COMMIT_COUNT" >> $GITHUB_OUTPUT
+
+      - name: Generate Tag Name
+        id: generate_tag
+        run: |
+          TAG="commit-${{ steps.get_commit_count.outputs.commit_count }}"
+          echo "tag_name=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Check if Tag Exists
+        id: check_tag
+        run: |
+          TAG_EXISTS=$(git tag -l "${{ steps.generate_tag.outputs.tag_name }}")
+          echo "tag_exists=$TAG_EXISTS" >> $GITHUB_OUTPUT
+
+      - name: Create and Push Tag
+        if: steps.check_tag.outputs.tag_exists == ''
+        run: |
+          git tag -a "${{ steps.generate_tag.outputs.tag_name }}" -m "Automated tag for commit count ${{ steps.get_commit_count.outputs.commit_count }}"
+          git push origin "${{ steps.generate_tag.outputs.tag_name }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
