@@ -16,10 +16,42 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-#      - name: Install Tex package
-#        run: |
-#          sudo apt-get update && sudo apt-get install -y texlive-full
+        with:
+          fetch-depth: 0
+      - name: Set up Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+      - name: Get Current Version
+        id: get_version
+        run: |
+          # Get the latest tag matching SemVer
+          latest_tag=$(git tag --list 'v*.*.*' --sort=-v:refname | head -n1)
+          echo "Latest tag: $latest_tag"
+          
+          # Extract version numbers
+          if [ -z "$latest_tag" ]; then
+            new_version="v0.1.0"
+          else
+            # Remove the 'v' prefix
+            version=${latest_tag#v}
+            IFS='.' read -r major minor patch <<< "$version"
+            
+            # Increment the patch version
+            patch=$((patch + 1))
+            
+            # Assemble the new version
+            new_version="v$major.$minor.$patch"
+          fi
+          
+          echo "New version: $new_version"
+          echo "new_version=$new_version" >> $GITHUB_OUTPUT
+          
+      - name: Create Tag
+        run: |
+          git tag ${{ steps.get_version.outputs.new_version }}
+          git push origin ${{ steps.get_version.outputs.new_version }}
 
       - name: Compile to latex
         run: |
@@ -37,8 +69,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.event.repository.updated_at }}
-          release_name: Release ${{ github.event.repository.updated_at }}
+          tag_name: ${{ steps.get_version.outputs.new_version }}
+          release_name: Release ${{ steps.get_version.outputs.new_version }}
           body: "Automated release of the compiled PDF."
           draft: false
           prerelease: false
