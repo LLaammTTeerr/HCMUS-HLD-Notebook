@@ -12,12 +12,11 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Tex package
         run: |
-          sudo apt-get update
-          suto apt-get install -y texlive-full
+          sudo apt-get update && apt-get install -y texlive-full
 
       - name: Compile to latex
         run: |
