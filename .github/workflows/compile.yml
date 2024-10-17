@@ -12,8 +12,6 @@ jobs:
 
     container:
       image: texlive/texlive:latest
-      # Optional: Specify user to match file permissions
-      options: --user $(id -u):$(id -g)
 
     steps:
       - name: Checkout repository
