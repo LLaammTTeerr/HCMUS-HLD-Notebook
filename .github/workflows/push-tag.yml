@@ -25,6 +25,7 @@ jobs:
         run: |
           COMMIT_COUNT=$(git rev-list --count HEAD)
           echo "commit_count=$COMMIT_COUNT" >> $GITHUB_OUTPUT
+          echo $COMMIT_COUNT
 
       - name: Generate Tag Name
         id: generate_tag
@@ -44,4 +45,4 @@ jobs:
           git tag -a "${{ steps.generate_tag.outputs.tag_name }}" -m "Automated tag for commit count ${{ steps.get_commit_count.outputs.commit_count }}"
           git push origin "${{ steps.generate_tag.outputs.tag_name }}"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
