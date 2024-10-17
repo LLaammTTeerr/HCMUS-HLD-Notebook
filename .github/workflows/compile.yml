@@ -4,19 +4,24 @@ on:
   push:
     branches:
       - main
-    workflow_dispath:
+    workflow_dispatch:
 
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
 
+    container:
+      image: texlive/texlive:latest
+      # Optional: Specify user to match file permissions
+      options: --user $(id -u):$(id -g)
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Tex package
-        run: |
-          sudo apt-get update && sudo apt-get install -y texlive-full
+#      - name: Install Tex package
+#        run: |
+#          sudo apt-get update && sudo apt-get install -y texlive-full
 
       - name: Compile to latex
         run: |
