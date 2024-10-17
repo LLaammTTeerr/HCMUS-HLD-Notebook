@@ -37,7 +37,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.sha }}
           release_name: Release ${{ github.sha }}
           body: "Automated release of the compiled PDF."
           draft: false
