@@ -1,0 +1,26 @@
+name: Tag with Commit Count
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Get Commit Count
+        id: commit_count
+        run: echo "count=$(git rev-list --count HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Create Tag
+        run: |
+          TAG_NAME="commit-${{ steps.commit_count.outputs.count }}"
+          git tag "$TAG_NAME"
+          git push origin "$TAG_NAME"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
