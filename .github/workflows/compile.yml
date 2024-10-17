@@ -15,6 +15,22 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Retrieve Latest Tag
+        id: get_latest_tag
+        run: |
+          # Fetch all tags to ensure they are present
+          git fetch --tags
+
+          # Retrieve the latest tag
+          LATEST_TAG=$(git describe --tags --abbrev=0)
+
+          echo "Latest Tag: $LATEST_TAG"
+
+          # Set the tag as an output variable
+          echo "latest_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
 
       - name: Compile to latex
         run: |
@@ -31,8 +47,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
+          tag_name: ${{ steps.get_latest_tag.outputs.latest_tag }}
+          release_name: Release ${{ steps.get_latest_tag.outputs.latest_tag }}
           body: "Automated release of the compiled PDF."
           draft: false
           prerelease: false
