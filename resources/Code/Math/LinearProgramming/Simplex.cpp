@@ -1,6 +1,5 @@
 // Two-phase simplex algorithm for solving linear programs of the form
-//
-//     maximize     c^T x
+//     maximize     cx
 //     subject to   Ax <= b
 //                  x >= 0
 //
@@ -89,9 +88,9 @@ int main() {
     const int m = 4;
     const int n = 3;
     DOUBLE _A[m][n] = {
-        { 6, -1, 0 },
-        { -1, -5, 0 },
-        { 1, 5, 1 },
+        {  6, -1,  0 },
+        { -1, -5,  0 },
+        {  1,  5,  1 },
         { -1, -5, -1 }
     };
     DOUBLE _b[m] = { 10, -4, 5, -5 };
